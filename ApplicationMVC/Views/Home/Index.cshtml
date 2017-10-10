@@ -1,0 +1,145 @@
+﻿@model ApplicationMVC.Models.ViewModel
+
+@{
+	ViewBag.Title = "Home Page";
+}
+
+
+<link rel="stylesheet" href="~/Content/shauliCSS.css" type="text/css" media="screen" />
+
+<div id="mainContent">
+	<article id="article">
+		<form action="/action_page.php">
+
+			<h3>Post serach :</h3>
+
+			<p>
+				Date:<input type="date" name="date">&nbsp;
+				to:&nbsp;<input type="date" name="date">
+				<br>
+				Minimum words:&nbsp; <input type="range" name="minWords" min="1" max="10">
+				<br>
+				Author:&nbsp;<input type="text" name="name">
+				<br>
+				E-mail:&nbsp;<input type="email" name="email">
+				<br>
+				Words:&nbsp;<input type="text" name="words">
+			</p>
+
+			<p>
+				<input type="submit" value="Filter">
+			</p>
+
+		</form>
+
+
+		@foreach (var item in Model.Posts)
+			{
+
+			<article class="blogPost">
+				<header>
+					<h2>
+						@Html.DisplayFor(modelItem => item.Title)
+					</h2>
+					<b>Author :</b>	@Html.DisplayFor(modelItem => item.AuthorName)
+					&nbsp;&nbsp;<b>Publish date:</b>@Html.DisplayFor(modelItem => item.PublishDate)
+					&nbsp;&nbsp;<b>Author site :</b>@Html.DisplayFor(modelItem => item.SiteAddress)
+				</header>
+				<div>
+					@Html.DisplayFor(modelItem => item.Body)
+				</div>
+				<img src="@Html.DisplayFor(modelItem =>item.image)">
+				<video width="320" height="240" controls>
+				<source src="@Html.DisplayFor(modelItem =>item.video)" type="video/mp4">
+				</video>
+
+			</article>
+				<section id="comments">
+					<h3>Comments</h3>
+					
+					@foreach (var comment in Model.Comments.Where(comment => comment.PostID == item.PostID))
+					{
+						<article>
+							<header>
+								@Html.DisplayFor(modelItem => comment.Title)
+								&nbsp; <b><a href="http://@Html.DisplayFor(modelItem => comment.Site)">@Html.DisplayFor(modelItem => comment.AuthorName)</a> </b>
+
+							</header>
+							<p>
+								@Html.DisplayFor(modelItem => comment.Body)
+							</p>
+						</article>
+					}
+
+					@using (Html.BeginForm("CreateComment", "Comments", FormMethod.Post))
+					{
+						@Html.AntiForgeryToken()
+
+						<div class="form-horizontal">
+							<h4>Comment</h4>
+							<b>Must fill out all fields for successfully posting a comment </b>
+							<hr />
+							@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+							<div class="form-group">
+								@Html.LabelFor(model => model.Comment.PostID, "PostID", htmlAttributes: new { @class = "hidden" })
+								@Html.HiddenFor(model => model.Comment.PostID, new { Value = @item.PostID })
+								<div class="col-md-10">
+									@Html.ValidationMessageFor(model => model.Comment.PostID, "", new { @class = "text-danger" })
+								</div>
+							</div>
+
+
+							<div class="form-group">
+								@Html.LabelFor(model => model.Comment.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+								<div class="col-md-10">
+									@Html.EditorFor(model => model.Comment.Title, new { htmlAttributes = new { @class = "form-control" } })
+									@Html.ValidationMessageFor(model => model.Comment.Title, "", new { @class = "text-danger" })
+								</div>
+							</div>
+
+							<div class="form-group">
+								@Html.LabelFor(model => model.Comment.AuthorName, htmlAttributes: new { @class = "control-label col-md-2" })
+								<div class="col-md-10">
+									@Html.EditorFor(model => model.Comment.AuthorName, new { htmlAttributes = new { @class = "form-control" } })
+									@Html.ValidationMessageFor(model => model.Comment.AuthorName, "", new { @class = "text-danger" })
+								</div>
+							</div>
+
+							<div class="form-group">
+								@Html.LabelFor(model => model.Comment.Site, htmlAttributes: new { @class = "control-label col-md-2" })
+								<div class="col-md-10">
+									@Html.EditorFor(model => model.Comment.Site, new { htmlAttributes = new { @class = "form-control" } })
+									@Html.ValidationMessageFor(model => model.Comment.Site, "", new { @class = "text-danger" })
+								</div>
+							</div>
+
+							<div class="form-group">
+								@Html.LabelFor(model => model.Comment.Body, htmlAttributes: new { @class = "control-label col-md-2" })
+								<div class="col-md-10">
+									@Html.EditorFor(model => model.Comment.Body, new { htmlAttributes = new { @class = "form-control" } })
+									@Html.ValidationMessageFor(model => model.Comment.Body, "", new { @class = "text-danger" })
+								</div>
+							</div>
+
+
+							<div class="form-group">
+								<div class="col-md-offset-2 col-md-10">
+									<input type="submit" required ="required" value="Create" class="btn btn-default" />
+								</div>
+							</div>
+
+						</div>
+					}
+				</section>
+
+
+			}
+	</article>
+
+		</div>
+
+
+
+
+

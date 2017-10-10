@@ -1,0 +1,26 @@
+﻿@model ApplicationMVC.Models.ViewModel
+
+@{
+	ViewBag.Title = "CommentsOfPost";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div id="mainContent">
+	<article id="article">
+		<h2>Comments of Post</h2>
+
+		@foreach (var comment in Model.Comments.Where(comment => comment.PostID == Model.Post.PostID))
+		{
+			<article>
+				<header>
+					@Html.DisplayFor(modelItem => comment.Title) <b>by </b> @Html.DisplayFor(modelItem => comment.AuthorName)
+				</header>
+				<p>@Html.DisplayFor(modelItem => comment.Body)</p>
+				@Html.ActionLink("Delete", "Delete", "Comments", new { id = comment.CommentID }, null)
+				<br /><br />
+			</article>
+		}
+</article>
+</div>
+
